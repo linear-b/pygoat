@@ -63,7 +63,7 @@ def register(request):
 #     else:
 #         form=UserCreationForm()
 #         return render(request,"registration/register.html",{"form":form,})
-
+#
 def home(request):
     if request.user.is_authenticated:
         return render(request,'introduction/home.html',)
