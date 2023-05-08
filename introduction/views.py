@@ -185,7 +185,6 @@ def sql_lab(request):
     else:
         return redirect('login')
 
-#***************** INSECURE DESERIALIZATION***************************************************************#
 
 def insec_des(request):
     if request.user.is_authenticated:
