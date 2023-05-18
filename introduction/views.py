@@ -132,7 +132,6 @@ def xss_lab3(request):
     else:        
         return redirect('login')
 
-#***********************************SQL****************************************************************#
 
 def sql(request):
     if request.user.is_authenticated:
@@ -184,7 +183,6 @@ def sql_lab(request):
             return render(request, 'Lab/SQL/sql_lab.html')
     else:
         return redirect('login')
-
 
 def insec_des(request):
     if request.user.is_authenticated:
