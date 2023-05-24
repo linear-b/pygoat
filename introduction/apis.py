@@ -4,6 +4,7 @@ from introduction.playground.ssrf import main
 from introduction.playground.A9.main import Log
 from introduction.playground.A6.utility import check_vuln
 from django.contrib.auth import login,authenticate
+from .utility import *
 from django.views.decorators.csrf import csrf_exempt
 import time
 from .views import authentication_decorator
