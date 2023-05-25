@@ -35,7 +35,7 @@ automations:
           label: '🐞 x {{ sonar.bugs.count }} Bugs 1'
           color: {{ sonar.bugs.rating | mapToEnum(enum = colors) }}
           
-	label_color:
+  label_color:
     if:
       - true
     run:
