@@ -8,32 +8,32 @@ automations:
     run:
       - action: add-label@v1
         args:
-          label: '🛡️ x {{ sonar.vulnerabilities.count }} Vulnerabilities'
-          color: {{ colors.E if (sonar.vulnerabilities.rating == 'E') else (colors.C if (sonar.vulnerabilities.rating == 'C' ) else colors.A) }}
+          label: '🛡️ x {{ sonar.vulnerabilities.count }} Vulnerabilities 1'
+          color: {{ sonar.vulnerabilities.rating | mapToEnum(enum = colors) }}
   security_hotspots:
     if:
       - {{ sonar.security_hotspots.count > 0}}
     run:
       - action: add-label@v1
         args:
-          label: '🌶️ x {{ sonar.security_hotspots.count }} Security Hotspots'
-          color: {{ colors.E if (sonar.security_hotspots.rating == 'E') else (colors.C if (sonar.security_hotspots.rating == 'C' ) else colors.A) }}
+          label: '🌶️ x {{ sonar.security_hotspots.count }} Security Hotspots 1'
+          color: {{ sonar.security_hotspots.rating | mapToEnum(enum = colors) }}
   code_smells:
     if:
       - {{ sonar.code_smells.count > 0}}
     run:
       - action: add-label@v1
         args:
-          label: '💩 x {{ sonar.code_smells.count }} Code Smells'
-          color: {{ colors.E if (sonar.code_smells.rating == 'E') else (colors.C if (sonar.code_smells.rating == 'C' ) else colors.A) }}
+          label: '💩 x {{ sonar.code_smells.count }} Code Smells 1'
+          color: {{ sonar.code_smells.rating | mapToEnum(enum = colors) }}
   bugs:
     if:
       - {{ sonar.bugs.count > 0}}
     run:
       - action: add-label@v1
         args:
-          label: '🐞 x {{ sonar.bugs.count }} Bugs'
-          color: {{ colors.E if (sonar.bugs.rating == 'E') else (colors.C if (sonar.bugs.rating == 'C' ) else colors.A) }}
+          label: '🐞 x {{ sonar.bugs.count }} Bugs 1'
+          color: {{ sonar.bugs.rating | mapToEnum(enum = colors) }}
 
   mark_outstanding_pr:
     if:
@@ -55,17 +55,7 @@ automations:
         args:
           reviewers: [Dudu-linb]
 
-  jitttt:
-    if:
-      - {{ jit.metrics.HIGH > 0}}
-    run:
-      - action: add-label@v1
-        args:
-          label: '{{ jit.metrics.HIGH }} high vulns by Jit'
-
-
 sonar: {{ pr | extractSonarFindings }}
-#jit: {{ pr | extractJitFindings }}
 
 colors:
   A: '05AA02'
