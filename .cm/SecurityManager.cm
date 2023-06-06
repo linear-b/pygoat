@@ -9,28 +9,52 @@ automations:
       - action: add-comment@v1
         args:
           comment: |
-            PR: {{ pr | dump | safe }}
+            comments: {{ pr.comments | dump | safe }}
 
   Security_comment:
     if:
       - {{ jit.metrics.HIGH > 0 }}
-      - {{ pr.conversations | filter(attr='commenter', term='gitstream-cm') | filter (attr='content', term='This PR failed due to High severity vulnerability finding') | nope }}
+      - {{ pr.conversations | filter(attr='commenter', term='gitstream-cm') | filter (attr='content', term='This PR failed due to High severity vulnerability finding, if you don`t fix it please select:') | nope }}
     run:
       - action: add-comment@v1
         args:
           comment: |
-            This PR failed due to High severity vulnerability finding, if you don`t fix it please select:
+            This PR failed due to High severity vulnerability finding, if you don't fix it please select:
             - [ ] I need help with that fix.
             - [ ] I want to accept the risk, please approve.     
             - [ ] This is false positive, please approve.
             - [ ] This is a test / simulator environment, please exclude.
 
-  Security_comment_response:
+  Security_comment_need_help:
     if:
-      - {{ pr.conversations | filter(attr='commenter', term='gitstream-cm') | filter (attr='content', term='- [x] I need help with that fix.') | some}}
+      - {{ pr.comments | filter(attr='commenter', term='gitstream-cm') | filter (attr='content', term='- [x] I need help with that fix.') | some}}
     run:
       - action: add-label@v1
         args:
           label: "Fix pending"
+
+  Security_comment_accept_risk:
+    if:
+      - {{ pr.comments | filter(attr='commenter', term='gitstream-cm') | filter (attr='content', term='- [x] I want to accept the risk, please approve.') | some}}
+    run:
+      - action: add-label@v1
+        args:
+          label: "Accept risk"
+
+  Security_comment_false_positive:
+    if:
+      - {{ pr.comments | filter(attr='commenter', term='gitstream-cm') | filter (attr='content', term='- [x] This is false positive, please approve.') | some}}
+    run:
+      - action: add-label@v1
+        args:
+          label: "False positive"
+
+  Security_comment_test_env:
+    if:
+      - {{ pr.comments | filter(attr='commenter', term='gitstream-cm') | filter (attr='content', term='- [x] This is a test / simulator environment, please exclude.') | some}}
+    run:
+      - action: add-label@v1
+        args:
+          label: "Test environment"
 
 jit: {{ pr | extractJitFindings }}
