@@ -4,7 +4,7 @@ manifest:
 automations:
   debug:
     if:
-      - false
+      - true
     run:
       - action: add-comment@v1
         args:
