@@ -13,21 +13,20 @@ automations:
 
   Security_comment:
     if:
-      - {{ jit.metrics.HIGH > 0 }}
-#      - {{ pr.comments | filter(attr='commenter', term='gitstream-cm') | filter (attr='content', term='This PR failed due to High severity vulnerability finding') | nope }}
+      - {{ orca.vulnerabilities.count > 0 }}
     run:
       - action: add-comment@v1
         args:
           comment: |
-            This PR failed due to High severity vulnerability finding, if you don't fix it please select:
-            - [ ] I need help with that fix.
-            - [ ] I want to accept the risk, please approve.     
-            - [ ] This is false positive, please approve.
-            - [ ] This is a test / simulator environment, please exclude.
+            This PR failed due to A severity vulnerability finding, if you don't fix it, please select:
+            - [ ] I need help with that fix. Assign to security champion
+            - [ ] I want to accept the risk, please approve. Assign the PR to the security team
+            - [ ] This is a false positive, please approve. Assign the PR to the security team
+            - [ ] This is a test/simulator environment, please exclude. Assign to Team lead
 
   Security_comment_need_help:
     if:
-      - {{ pr.comments | filter(attr='commenter', term='gitstream-cm') | filter (attr='content', term='- [x] I need help with that fix.') | some}}
+      - {{ pr.comments | filter(attr='commenter', term='gitstream-cm') | filter (attr='content', term='- [x] I need help with that fix. Assign to security champion') | some}}
     run:
       - action: add-label@v1
         args:
@@ -35,7 +34,7 @@ automations:
 
   Security_comment_accept_risk:
     if:
-      - {{ pr.comments | filter(attr='commenter', term='gitstream-cm') | filter (attr='content', term='- [x] I want to accept the risk, please approve.') | some}}
+      - {{ pr.comments | filter(attr='commenter', term='gitstream-cm') | filter (attr='content', term='- [x] I want to accept the risk, please approve. Assign the PR to the security team') | some}}
     run:
       - action: add-label@v1
         args:
@@ -43,7 +42,7 @@ automations:
 
   Security_comment_false_positive:
     if:
-      - {{ pr.comments | filter(attr='commenter', term='gitstream-cm') | filter (attr='content', term='- [x] This is false positive, please approve.') | some}}
+      - {{ pr.comments | filter(attr='commenter', term='gitstream-cm') | filter (attr='content', term='- [x] This is a false positive, please approve. Assign the PR to the security team') | some}}
     run:
       - action: add-label@v1
         args:
@@ -51,10 +50,10 @@ automations:
 
   Security_comment_test_env:
     if:
-      - {{ pr.comments | filter(attr='commenter', term='gitstream-cm') | filter (attr='content', term='- [x] This is a test / simulator environment, please exclude.') | some}}
+      - {{ pr.comments | filter(attr='commenter', term='gitstream-cm') | filter (attr='content', term='- [x] This is a test/simulator environment, please exclude. Assign to Team lead') | some}}
     run:
       - action: add-label@v1
         args:
           label: "Test environment"
 
-jit: {{ pr | extractJitFindings }}
+orca: {{ pr | extractOrcaFindings }}
