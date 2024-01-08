@@ -13,6 +13,7 @@ automations:
 
   Security_comment:
     if:
+      - {{ pr.comments | filter(attr='commenter', term='gitstream-cm') | filter (attr='content', term='- [x]' | nope }}
       - {{ orca.infrastructure_as_code.count > 0 }}
     run:
       - action: add-comment@v1
